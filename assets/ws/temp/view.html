@@ -51,14 +51,11 @@
             {% endfor %}
         {% endif %}
     </table>
-    <hr noshade>
-    <em>{% rstr v_wel_to %} <a target="_blank" href="https://github.com/joinAero/AndroidWebServ/">AndroidWebServ Source</a>!</em>
-    <p>&nbsp;</p>
 {% endblock %}
 
 {% block script %}
-    <script src="{{ SERV_ROOT_DIR }}js/jquery-1.9.1.min.js"></script>
-    <script src="{{ SERV_ROOT_DIR }}js/ajaxfileupload.min.js"></script>
-    <script src="{{ SERV_ROOT_DIR }}js/wsf.confirm.js"></script>
-    <script src="{{ SERV_ROOT_DIR }}js/wsf.view.js"></script>
+    <script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/jquery-1.9.1.min.js"></script>
+    <script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/ajaxfileupload.min.js"></script>
+    <script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/wsf.confirm.js"></script>
+    <script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/wsf.view.js"></script>
 {% endblock %}
