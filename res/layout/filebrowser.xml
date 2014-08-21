@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.join.ws.ui.widget.FileBrowser xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.cim.ui.widget.FileBrowser xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:join="http://github.com/joinAero/AndroidWebServ/"
     android:id="@+id/filebrowser"
     android:layout_width="match_parent"

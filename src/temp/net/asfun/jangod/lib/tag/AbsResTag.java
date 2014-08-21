@@ -6,7 +6,7 @@ import net.asfun.jangod.lib.Tag;
 import net.asfun.jangod.tree.NodeList;
 import net.asfun.jangod.util.HelperStringTokenizer;
 
-import org.join.ws.WSApplication;
+import com.android.cim.WSApplication;
 
 /**
  * {% resTag 'strName' %}
