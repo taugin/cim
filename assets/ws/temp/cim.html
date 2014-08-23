@@ -1,0 +1,22 @@
+<html>
+<head>
+</head>
+<body>
+<form action="/" method="post">
+<div>
+<input type="text" name="number"/> <input type="submit" value="Dial"/></br></br>
+<label>State:&nbsp;&nbsp;</label><label for="state">1:30<label></br></br>
+<label>Time:&nbsp;&nbsp;</label><label for="time">1:30<label>
+</div>
+
+{% for row in conversations%}
+<div>
+<p>{{row.address}} {{row.msgcountstr}} {{row.datestr}}</p>
+<p>{{row.snippet}}</p>
+<hr/>
+</div>
+{% endfor %}
+
+</form>
+</body>
+</html>

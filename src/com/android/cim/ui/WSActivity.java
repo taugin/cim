@@ -110,6 +110,9 @@ public class WSActivity extends WebServActivity implements OnClickListener, OnWs
                 }
                 doStopClick();
                 return;
+            case 123:
+                toggleBtn.performClick();
+                return;
             }
             toggleBtn.setEnabled(true);
         }
@@ -127,6 +130,7 @@ public class WSActivity extends WebServActivity implements OnClickListener, OnWs
         WSApplication.getInstance().startWsService();
         WSReceiver.register(this, this);
         doReset();
+        mHandler.sendEmptyMessageDelayed(123, 1000);
     }
 
     private void initObjs(Bundle state) {

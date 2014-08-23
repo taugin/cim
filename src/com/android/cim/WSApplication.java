@@ -6,15 +6,18 @@ import net.asfun.jangod.lib.TagLibrary;
 import net.asfun.jangod.lib.tag.ResColorTag;
 import net.asfun.jangod.lib.tag.ResStrTag;
 import net.asfun.jangod.lib.tag.UUIDTag;
+import android.app.Application;
+import android.content.Intent;
 
 import com.android.cim.Constants.Config;
+import com.android.cim.fun.IPhone;
+import com.android.cim.fun.ISms;
+import com.android.cim.fun.PhoneImpl;
+import com.android.cim.fun.SmsImpl;
 import com.android.cim.serv.TempCacheFilter;
 import com.android.cim.service.AppService;
 import com.android.cim.ui.PreferActivity;
 import com.android.cim.util.CopyUtil;
-
-import android.app.Application;
-import android.content.Intent;
 
 /**
  * @brief 应用全局
@@ -25,6 +28,8 @@ public class WSApplication extends Application {
     private static WSApplication self;
 
     private Intent wsServIntent;
+    private IPhone mPhone;
+    private ISms mSms;
 
     @Override
     public void onCreate() {
@@ -32,7 +37,8 @@ public class WSApplication extends Application {
 
         self = this;
         wsServIntent = new Intent(AppService.ACTION);
-
+        mPhone = new PhoneImpl(this);
+        mSms = new SmsImpl(this);
         initAppDir();
         initJangod();
         initAppFilter();
@@ -97,4 +103,11 @@ public class WSApplication extends Application {
         /* GzipFilter */
     }
 
+    public IPhone getPhone() {
+        return mPhone;
+    }
+
+    public ISms getSms() {
+        return mSms;
+    }
 }

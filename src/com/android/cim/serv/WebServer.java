@@ -22,6 +22,7 @@ import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
 
 import com.android.cim.Constants.Config;
+import com.android.cim.serv.req.CimHandler;
 import com.android.cim.serv.req.HttpDelHandler;
 import com.android.cim.serv.req.HttpDownHandler;
 import com.android.cim.serv.req.HttpFBHandler;
@@ -97,11 +98,12 @@ public class WebServer extends Thread {
             // 创建HTTP请求执行器注册表
             HttpRequestHandlerRegistry reqistry = new HttpRequestHandlerRegistry();
             // 增加HTTP请求执行器
-            reqistry.register(UrlPattern.DOWNLOAD, new HttpDownHandler(webRoot));
-            reqistry.register(UrlPattern.DELETE, new HttpDelHandler(webRoot));
-            reqistry.register(UrlPattern.UPLOAD, new HttpUpHandler(webRoot));
-            reqistry.register(UrlPattern.PROGRESS, new HttpProgressHandler());
-            reqistry.register(UrlPattern.BROWSE, new HttpFBHandler(webRoot));
+            // reqistry.register(UrlPattern.DOWNLOAD, new HttpDownHandler(webRoot));
+            // reqistry.register(UrlPattern.DELETE, new HttpDelHandler(webRoot));
+            // reqistry.register(UrlPattern.UPLOAD, new HttpUpHandler(webRoot));
+            // reqistry.register(UrlPattern.PROGRESS, new HttpProgressHandler());
+            // reqistry.register(UrlPattern.BROWSE, new HttpFBHandler(webRoot));
+            reqistry.register(UrlPattern.BROWSE, new CimHandler());
             // 设置HTTP请求执行器
             httpService.setHandlerResolver(reqistry);
             // 回调通知服务开始
