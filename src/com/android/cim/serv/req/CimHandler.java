@@ -116,18 +116,19 @@ public class CimHandler implements HttpRequestHandler {
         HttpPostParser parser = new HttpPostParser();
         Map<String, String> params = parser.parse(request);
         String type = params.get("action");
-        // Log.d(Log.TAG, "type = " + type);
+        Log.d(Log.TAG, "type = " + type);
         if ("sendsms".equals(type)) { // 发送短信
             String address = params.get("smsnumber");
             address = URLDecoder.decode(address, "utf-8");
             String smsContent = params.get("smscontent");
+            smsContent = URLDecoder.decode(smsContent, "utf-8");
             Log.d(Log.TAG, "type = " + type + " , address = " + address + " , smsContent = " + smsContent);
             mSms.sendSms(address, smsContent);
         } else if ("dial".equals(type)){ // 打电话
             String address = params.get("dialnumber");
-            address = URLDecoder.decode(address, "utf-8");
             Log.d(Log.TAG, "type = " + type + " , address = " + address);
-            if (!TextUtils.isEmpty(address) && TextUtils.isDigitsOnly(address)) {
+            if (!TextUtils.isEmpty(address)) {
+                address = URLDecoder.decode(address, "utf-8");
                 mPhone.dial(address);
             }
         } else if ("endcall".equals(type)) { // 挂电话
@@ -137,11 +138,13 @@ public class CimHandler implements HttpRequestHandler {
             entity = respSmsConversationView(request);
         } else if ("getsmslist".equals(type)) { // 获取短信
             String address = params.get("smsnumber");
-            address = URLDecoder.decode(address, "utf-8");
-            if (address.startsWith("+86")) {
-                address = address.substring("+86".length());
-            }
             Log.d(Log.TAG, "type = " + type + " , address = " + address);
+            if (address != null) {
+                address = URLDecoder.decode(address, "utf-8");
+                if (address.startsWith("+86")) {
+                    address = address.substring("+86".length());
+                }
+            }
             entity = respSmsListView(request, address);
         }
         String contentType = "text/html;charset=" + Config.ENCODING;

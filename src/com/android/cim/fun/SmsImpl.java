@@ -74,7 +74,7 @@ public class SmsImpl implements ISms {
                         conv.snippet = c.getString(c.getColumnIndex("snippet"));
                         int _id = c.getInt(c.getColumnIndex("_id"));
                         conv.address = getAddress(_id);
-                        Log.d("taugin", "address = " + conv.address);
+                        // Log.d("taugin", "address = " + conv.address);
                         convList.add(conv);
                     } while (c.moveToNext());
                 }
