@@ -138,13 +138,13 @@ public class CimHandler implements HttpRequestHandler {
             entity = respSmsConversationView(request);
         } else if ("getsmslist".equals(type)) { // 获取短信
             String address = params.get("smsnumber");
-            Log.d(Log.TAG, "type = " + type + " , address = " + address);
             if (address != null) {
                 address = URLDecoder.decode(address, "utf-8");
                 if (address.startsWith("+86")) {
                     address = address.substring("+86".length());
                 }
             }
+            Log.d(Log.TAG, "type = " + type + " , address = " + address);
             entity = respSmsListView(request, address);
         }
         String contentType = "text/html;charset=" + Config.ENCODING;

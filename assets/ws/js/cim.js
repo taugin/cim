@@ -11,10 +11,7 @@ $(document).ready(function() {
         alert(dialnumber);
         $.post(
             "action.do",
-            {action:"dial",dialnumber:$("#dialnumber").val()},
-            function(data){
-                $("#conversations").html(data);
-            }
+            {action:"dial",dialnumber:$("#dialnumber").val()}
         );
     });
     
