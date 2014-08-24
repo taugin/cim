@@ -103,7 +103,7 @@ public class WebServer extends Thread {
             // reqistry.register(UrlPattern.UPLOAD, new HttpUpHandler(webRoot));
             // reqistry.register(UrlPattern.PROGRESS, new HttpProgressHandler());
             // reqistry.register(UrlPattern.BROWSE, new HttpFBHandler(webRoot));
-            reqistry.register(UrlPattern.BROWSE, new CimHandler());
+            reqistry.register(UrlPattern.BROWSE, new CimHandler(webRoot));
             // 设置HTTP请求执行器
             httpService.setHandlerResolver(reqistry);
             // 回调通知服务开始

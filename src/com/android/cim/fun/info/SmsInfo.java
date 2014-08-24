@@ -1,11 +1,11 @@
 package com.android.cim.fun.info;
 
 public class SmsInfo {
+    public String smsid;
     public String name;
-    public String number;
+    public String address;
     public String body;
-    public long time;
-    public String timestr;
-    public long date_send;
-    public int read;
+    public String date;
+    public String date_sent;
+    public String read;
 }

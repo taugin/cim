@@ -12,4 +12,6 @@ public interface IPhone {
     int getPhoneState();
 
     long getPhoneTime();
+
+    void endCall();
 }

@@ -1,22 +1,35 @@
 <html>
 <head>
+	<link rel="stylesheet" href="{{ SERV_ROOT_DIR }}css/cim.css">
+	<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/jquery-1.9.1.min.js"></script>
+	<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/cim.js"></script>
 </head>
 <body>
-<form action="/" method="post">
 <div>
-<input type="text" name="number"/> <input type="submit" value="Dial"/></br></br>
-<label>State:&nbsp;&nbsp;</label><label for="state">1:30<label></br></br>
-<label>Time:&nbsp;&nbsp;</label><label for="time">1:30<label>
+<input type="text" id="smsnumber"/> <input type="button" id="smsbutton" value="Send"/></br></br>
+<textarea class="textarea" type="text" id="smscontent"></textarea>
 </div>
-
-{% for row in conversations%}
 <div>
-<p>{{row.address}} {{row.msgcountstr}} {{row.datestr}}</p>
-<p>{{row.snippet}}</p>
+<input type="text" id="dialnumber"/> <input type="button" id="dialbutton" value="Dial"/><input type="button" id="endcallbutton" value="EndCall"/></br></br>
+</div>
+<!--div id="conversations">
+{% for row in smslist%}
+<div>
+<p>{{row.address}} {{row.date}}</p>
+<p>{{row.body}}</p>
 <hr/>
 </div>
 {% endfor %}
-
-</form>
+</div>
+<div id="smslist">
+{% for row in smslist%}
+<div>
+<p>{{row.address}} {{row.date}}</p>
+<p>{{row.body}}</p>
+<hr/>
+</div>
+{% endfor %}
+</div>
+</div-->
 </body>
 </html>
