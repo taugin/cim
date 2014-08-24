@@ -117,25 +117,25 @@ public class CimHandler implements HttpRequestHandler {
         Map<String, String> params = parser.parse(request);
         String type = params.get("action");
         // Log.d(Log.TAG, "type = " + type);
-        if ("sendsms".equals(type)) {
+        if ("sendsms".equals(type)) { // 发送短信
             String address = params.get("smsnumber");
             address = URLDecoder.decode(address, "utf-8");
             String smsContent = params.get("smscontent");
             Log.d(Log.TAG, "type = " + type + " , address = " + address + " , smsContent = " + smsContent);
             mSms.sendSms(address, smsContent);
-        } else if ("dial".equals(type)){
+        } else if ("dial".equals(type)){ // 打电话
             String address = params.get("dialnumber");
             address = URLDecoder.decode(address, "utf-8");
             Log.d(Log.TAG, "type = " + type + " , address = " + address);
             if (!TextUtils.isEmpty(address) && TextUtils.isDigitsOnly(address)) {
                 mPhone.dial(address);
             }
-        } else if ("endcall".equals(type)) {
+        } else if ("endcall".equals(type)) { // 挂电话
             Log.d(Log.TAG, "type = " + type);
             mPhone.endCall();
-        } else if ("getsmsconversations".equals(type)) {
+        } else if ("getsmsconversations".equals(type)) { // 获取短信会话
             entity = respSmsConversationView(request);
-        } else if ("getsmslist".equals(type)) {
+        } else if ("getsmslist".equals(type)) { // 获取短信
             String address = params.get("smsnumber");
             address = URLDecoder.decode(address, "utf-8");
             if (address.startsWith("+86")) {
