@@ -1,7 +1,7 @@
 <html>
 <head>
 	<link rel="stylesheet" href="{{ SERV_ROOT_DIR }}css/cim.css">
-	<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/jquery-1.9.1.min.js"></script>
+	<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/jquery-1.7.2.min.js"></script>
 	<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/cim.js"></script>
 </head>
 <body>
@@ -12,24 +12,8 @@
 <div>
 <input type="text" id="dialnumber"/> <input type="button" id="dialbutton" value="Dial"/><input type="button" id="endcallbutton" value="EndCall"/></br></br>
 </div>
-<!--div id="conversations">
-{% for row in smslist%}
-<div>
-<p>{{row.address}} {{row.date}}</p>
-<p>{{row.body}}</p>
-<hr/>
+<input type="button" id="getsmsconversations" value="GetSmsConversations"/>
+<div id="conversations">
 </div>
-{% endfor %}
-</div>
-<div id="smslist">
-{% for row in smslist%}
-<div>
-<p>{{row.address}} {{row.date}}</p>
-<p>{{row.body}}</p>
-<hr/>
-</div>
-{% endfor %}
-</div>
-</div-->
 </body>
 </html>

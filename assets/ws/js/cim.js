@@ -7,9 +7,14 @@ $(document).ready(function() {
     });
     
     $("#dialbutton").click(function () {
+        var dialnumber = $("#dialnumber").val();
+        alert(dialnumber);
         $.post(
-        "action.do",
-        {action:"dial",dialnumber:$("#dialnumber").val()}
+            "action.do",
+            {action:"dial",dialnumber:$("#dialnumber").val()},
+            function(data){
+                $("#conversations").html(data);
+            }
         );
     });
     
@@ -17,6 +22,25 @@ $(document).ready(function() {
         $.post(
         "action.do",
         {action:"endcall"}
+        );
+    });
+
+    $("#getsmsconversations").click(function () {
+        $.post(
+            "action.do",
+            {action:"getsmsconversations"},
+            function(data){
+                $("#conversations").html(data);
+            }
+        );
+    });
+    $("a").live("click", function () {
+        $.post(
+            "action.do",
+            {action:"getsmslist", smsnumber:$(this).html()},
+            function(data){
+                $("#conversations").html(data);
+            }
         );
     });
  });

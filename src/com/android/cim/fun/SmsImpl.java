@@ -14,10 +14,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.cim.fun.info.Conversation;
 import com.android.cim.fun.info.SmsInfo;
+import com.android.cim.util.Log;
 
 public class SmsImpl implements ISms {
 
@@ -97,8 +97,9 @@ public class SmsImpl implements ISms {
         List<SmsInfo> smsInfoList = null;
         String selection = null;
         if (!TextUtils.isEmpty(address)) {
-            selection = "address = " + address;
+            selection = "address like '%" + address + "'";
         }
+        Log.d(Log.TAG, "selection = " + selection);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd h:mm a");
         try {
             c = mContext.getContentResolver().query(MMSSMS_URI, SMS_PROJECTION, selection, null, "date desc");

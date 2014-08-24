@@ -6,6 +6,8 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.asfun.jangod.template.Processor;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
@@ -16,6 +18,7 @@ import org.apache.http.protocol.HttpRequestHandler;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.android.cim.Constants.Config;
 import com.android.cim.WSApplication;
@@ -80,10 +83,18 @@ public class CimHandler implements HttpRequestHandler {
 
         Progress.clear();
     }
+    private HttpEntity respSmsConversationView(HttpRequest request) throws IOException {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("conversations", mSms.getAllConversation());
+        return mViewFactory.renderTemp(request, "sms.html", data);
+    }
+    private HttpEntity respSmsListView(HttpRequest request, String address) throws IOException {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("smslist", mSms.getSms(address));
+        return mViewFactory.renderTemp(request, "sms.html", data);
+    }
     private HttpEntity respView(HttpRequest request) throws IOException {
         Map<String, Object> data = new HashMap<String, Object>();
-        // data.put("conversations", mSms.getAllConversation());
-        data.put("smslist", mSms.getSms(null));
         return mViewFactory.renderTemp(request, "cim.html", data);
     }
     private HttpEntity resp403(HttpRequest request) throws IOException {
@@ -101,27 +112,41 @@ public class CimHandler implements HttpRequestHandler {
             throws HttpException, IOException{
         String method = request.getRequestLine().getMethod();
         Log.d(Log.TAG, "method = " + method);
+        HttpEntity entity = null;
         HttpPostParser parser = new HttpPostParser();
         Map<String, String> params = parser.parse(request);
         String type = params.get("action");
-        Log.d(Log.TAG, "type = " + type);
+        // Log.d(Log.TAG, "type = " + type);
         if ("sendsms".equals(type)) {
             String address = params.get("smsnumber");
+            address = URLDecoder.decode(address, "utf-8");
             String smsContent = params.get("smscontent");
             Log.d(Log.TAG, "type = " + type + " , address = " + address + " , smsContent = " + smsContent);
             mSms.sendSms(address, smsContent);
         } else if ("dial".equals(type)){
             String address = params.get("dialnumber");
+            address = URLDecoder.decode(address, "utf-8");
             Log.d(Log.TAG, "type = " + type + " , address = " + address);
-            mPhone.dial(address);
+            if (!TextUtils.isEmpty(address) && TextUtils.isDigitsOnly(address)) {
+                mPhone.dial(address);
+            }
         } else if ("endcall".equals(type)) {
             Log.d(Log.TAG, "type = " + type);
             mPhone.endCall();
+        } else if ("getsmsconversations".equals(type)) {
+            entity = respSmsConversationView(request);
+        } else if ("getsmslist".equals(type)) {
+            String address = params.get("smsnumber");
+            address = URLDecoder.decode(address, "utf-8");
+            if (address.startsWith("+86")) {
+                address = address.substring("+86".length());
+            }
+            Log.d(Log.TAG, "type = " + type + " , address = " + address);
+            entity = respSmsListView(request, address);
         }
-        HttpEntity entity;
         String contentType = "text/html;charset=" + Config.ENCODING;
-        entity = respView(request);
         response.setHeader("Content-Type", contentType);
         response.setEntity(entity);
+        Progress.clear();
     }
 }

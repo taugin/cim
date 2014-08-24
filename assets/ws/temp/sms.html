@@ -1,0 +1,22 @@
+<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/jquery-1.9.1.min.js"></script>
+<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/cim.js"></script>
+{% if conversations %}
+{% for row in conversations%}
+<div>
+<p><a href="javascript:void(0);">{{row.address}}</a>     {{row.datestr}}</p>
+<p>{{row.snippet}}</p>
+<hr/>
+</div>
+{% endfor %}
+{% endif %}
+
+
+{% if smslist %}
+{% for row in smslist%}
+<div>
+<p>{{row.address}} {{row.date}}</p>
+<p>{{row.body}}</p>
+<hr/>
+</div>
+{% endfor %}
+{% endif %}
