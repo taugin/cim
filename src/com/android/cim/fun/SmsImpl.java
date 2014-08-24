@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -147,6 +148,13 @@ public class SmsImpl implements ISms {
         for (String text : divideContents) {
             smsManager.sendTextMessage(address, null, text, pandingIntent, null);
         }
+        ContentValues values = new ContentValues();
+        values.put("date", System.currentTimeMillis());
+        values.put("type", 2);
+        values.put("address", address);
+        values.put("body", smsContent);
+        Uri uri = mContext.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
+        Log.d(Log.TAG, "uri = " + uri);
         return 0;
     }
 
