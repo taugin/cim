@@ -32,6 +32,9 @@
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- Don't require camera, as this requires a rear camera. This allows it to work on the Nexus 7 -->
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
@@ -76,6 +79,11 @@
             <intent-filter>
                 <action android:name="org.join.service.AppService" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.android.cim.action.INCOMING_PHONE" />
+                <action android:name="com.android.cim.action.OUTGOING_PHONE" />
+                <action android:name="com.android.cim.action.PHONE_STATE" />
             </intent-filter>
         </service>
 

@@ -8,12 +8,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.cim.Constants.Config;
 import com.android.cim.R;
+import com.android.cim.receiver.CallStateReceiver;
 import com.android.cim.serv.WebServer;
 import com.android.cim.serv.WebServer.OnWebServListener;
 import com.android.cim.ui.WebServActivity;
@@ -45,6 +48,8 @@ public class WebService extends Service implements OnWebServListener {
     private int NOTI_SERV_RUNNING = R.string.noti_serv_running;
 
     private LocalBinder mBinder = new LocalBinder();
+
+    private CallStateReceiver mCallStateReceiver;
 
     public class LocalBinder extends Binder {
         public WebService getService() {
@@ -103,17 +108,20 @@ public class WebService extends Service implements OnWebServListener {
             mListener.onStarted();
         }
         isRunning = true;
+        registerCallRecevier();
     }
 
     @Override
     public void onStopped() {
         if (DEBUG)
             Log.d(TAG, "onStopped");
-        mNM.cancel(NOTI_SERV_RUNNING);
+        //mNM.cancel(NOTI_SERV_RUNNING);
+        stopForeground(true);
         if (mListener != null) {
             mListener.onStopped();
         }
         isRunning = false;
+        unregisterCallReceiver();
     }
 
     @Override
@@ -174,7 +182,8 @@ public class WebService extends Service implements OnWebServListener {
         notification.setLatestEventInfo(this, getText(R.string.app_name), text, contentIntent);
         notification.flags = Notification.FLAG_ONGOING_EVENT;
 
-        mNM.notify(resId, notification);
+        // mNM.notify(resId, notification);
+        startForeground(resId, notification);
     }
 
     public boolean isRunning() {
@@ -185,4 +194,14 @@ public class WebService extends Service implements OnWebServListener {
         this.mListener = mListener;
     }
 
+    private void registerCallRecevier() {
+        mCallStateReceiver = new CallStateReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+        filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+        registerReceiver(mCallStateReceiver, filter);
+    }
+    private void unregisterCallReceiver() {
+        unregisterReceiver(mCallStateReceiver);
+    }
 }

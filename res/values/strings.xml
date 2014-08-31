@@ -87,4 +87,5 @@
     <string name="v_up_fail">Upload fails.</string>
     <string name="v_not_allow">No longer allowed func.</string>
 
+    <string name="recording">Recording &#8230;</string>
 </resources>

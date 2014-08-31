@@ -51,4 +51,31 @@ public final class Constants {
         public static final int BUFFER_LENGTH = 4096;
     }
 
+    public static final String ACTION_INCOMING_PHONE = "com.android.cim.action.INCOMING_PHONE";
+    public static final String ACTION_OUTGOING_PHONE = "com.android.cim.action.OUTGOING_PHONE";
+    public static final String ACTION_START_RECORDING = "com.android.cim.action.START_RECORDING";
+
+    public static final String ACTION_PHONE_STATE = "com.android.cim.action.PHONE_STATE";
+
+    public static final String EXTRA_PHONE_NUMBER = "com.android.cim.extra.PHONE_NUMBER";
+    public static final String EXTRA_PHONE_STATE = "com.android.cim.extra.PHONE_STATE";
+
+    public static final String FILE_RECORD_FOLDER = "cim";
+
+    public static final int FLAG_NONE = 0;
+    public static final int FLAG_INCOMING = 1;
+    public static final int FLAG_MISSCALL = 2;
+    public static final int FLAG_BLOCKCALL = 3;
+    public static final int FLAG_OUTGOING = 4;
+
+    public static final String TABLE_RECORD = "record_table";
+    public static final String RECORD_CONTACT_ID = "record_contact_id";
+    public static final String RECORD_NAME = "record_name";
+    public static final String RECORD_FILE = "record_file";
+    public static final String RECORD_NUMBER = "record_number";
+    public static final String RECORD_FLAG = "record_flag";
+    public static final String RECORD_SIZE = "record_size";
+    public static final String RECORD_RING = "record_ring";
+    public static final String RECORD_START = "record_start";
+    public static final String RECORD_END = "record_end";
 }
