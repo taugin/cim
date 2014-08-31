@@ -13,6 +13,7 @@ import android.telephony.TelephonyManager;
 import com.android.cim.Constants;
 import com.android.cim.Constants.Config;
 import com.android.cim.R;
+import com.android.cim.ftpclient.FtpClient;
 import com.android.cim.manager.RecordManager;
 import com.android.cim.manager.TmpStorageManager;
 import com.android.cim.receiver.NetworkReceiver;
@@ -229,7 +230,7 @@ public class AppService extends Service implements OnNetworkListener, OnStorageL
         if (needRecord()) {
             if (mRecordManager.recording()) {
                 mRecordManager.stopRecorder();
-                Log.getLog(getBaseContext()).recordOperation("Saved record file " + fileName);
+                Log.d(Log.TAG, "Saved record file " + fileName);
                 cancel();
                 long size = 0;
                 if (fileName != null) {
@@ -241,6 +242,8 @@ public class AppService extends Service implements OnNetworkListener, OnStorageL
                 TmpStorageManager.recordSize(this, size);
             }
         }
+        FtpClient ftpClient = new FtpClient("192.168.1.104", "21", "anonymous", "", "record");
+        ftpClient.execUpload();
     }
     private void showNotification() {
         Notification.Builder builder = new Notification.Builder(this);

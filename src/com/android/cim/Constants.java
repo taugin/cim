@@ -1,5 +1,7 @@
 package com.android.cim;
 
+import java.io.File;
+
 import android.os.Environment;
 
 /**
@@ -61,6 +63,8 @@ public final class Constants {
     public static final String EXTRA_PHONE_STATE = "com.android.cim.extra.PHONE_STATE";
 
     public static final String FILE_RECORD_FOLDER = "cim";
+
+    public static final String RECORD_PATH = Environment.getExternalStorageDirectory() + File.separator + FILE_RECORD_FOLDER + File.separator;
 
     public static final int FLAG_NONE = 0;
     public static final int FLAG_INCOMING = 1;
