@@ -9,5 +9,5 @@ public class Conversation {
     public String readcountstr;
     public String snippet;
     public String address;
-    public String contact;
+    public String name;
 }

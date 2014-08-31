@@ -7,12 +7,15 @@ import java.util.List;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
 
@@ -75,6 +78,7 @@ public class SmsImpl implements ISms {
                         conv.snippet = c.getString(c.getColumnIndex("snippet"));
                         int _id = c.getInt(c.getColumnIndex("_id"));
                         conv.address = getAddress(_id);
+                        conv.name = getNameFromContact(mContext, conv.address);
                         // Log.d("taugin", "address = " + conv.address);
                         convList.add(conv);
                     } while (c.moveToNext());
@@ -117,8 +121,14 @@ public class SmsImpl implements ISms {
                         smsInfo.date = sdf.format(new Date(date));
                         long date_sent = c.getLong(c.getColumnIndex("date_sent"));
                         smsInfo.date_sent = sdf.format(new Date(date_sent));
+                        if (date_sent > 0) {
+                            smsInfo.isSend = null;
+                        } else {
+                            smsInfo.isSend = "true";
+                        }
                         int read = c.getInt(c.getColumnIndex("read"));
                         smsInfo.read = String.valueOf(read);
+                        smsInfo.name = getNameFromContact(mContext, smsInfo.address);
                         smsInfoList.add(smsInfo);
                     } while (c.moveToNext());
                 }
@@ -198,4 +208,23 @@ public class SmsImpl implements ISms {
             context.unregisterReceiver(this);
         }
     };
+
+    private static String getNameFromContact(Context context, String phoneNumber) {
+        Cursor c = null;
+        try {
+            Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, phoneNumber);
+            String selection = ContactsContract.CommonDataKinds.Phone.NUMBER + " LIKE '%" + phoneNumber + "'";
+            c = context.getContentResolver().query(uri, null, null, null, null);
+            if (c != null && c.moveToFirst()) {
+                return c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            }
+        } catch (Exception e) {
+            Log.d("taugin", e.getLocalizedMessage());
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+        return null;
+    }
 }

@@ -43,7 +43,7 @@ public class WSApplication extends Application {
         initJangod();
         initAppFilter();
 
-        if (!Config.DEV_MODE) {
+        if (false && !Config.DEV_MODE) {
             /* 全局异常崩溃处理 */
             new CrashHandler(this);
         }

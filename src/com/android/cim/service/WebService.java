@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.android.cim.Constants.Config;
 import com.android.cim.R;
@@ -20,6 +19,7 @@ import com.android.cim.receiver.CallStateReceiver;
 import com.android.cim.serv.WebServer;
 import com.android.cim.serv.WebServer.OnWebServListener;
 import com.android.cim.ui.WebServActivity;
+import com.android.cim.util.Log;
 
 /**
  * @brief Web Service后台
@@ -195,13 +195,31 @@ public class WebService extends Service implements OnWebServListener {
     }
 
     private void registerCallRecevier() {
-        mCallStateReceiver = new CallStateReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
-        filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-        registerReceiver(mCallStateReceiver, filter);
+        try {
+            if (mCallStateReceiver == null) {
+                mCallStateReceiver = new CallStateReceiver();
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+                filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+                registerReceiver(mCallStateReceiver, filter);
+                Log.d(Log.TAG, "registerCallRecevier mCallStateReceiver = "
+                        + mCallStateReceiver);
+            }
+        } catch (java.lang.IllegalArgumentException e) {
+            Log.d(Log.TAG, e.getMessage());
+        }
     }
+
     private void unregisterCallReceiver() {
-        unregisterReceiver(mCallStateReceiver);
+        try {
+            if (mCallStateReceiver != null) {
+                unregisterReceiver(mCallStateReceiver);
+                Log.d(Log.TAG, "unregisterCallReceiver mCallStateReceiver = "
+                        + mCallStateReceiver);
+                mCallStateReceiver = null;
+            }
+        } catch (java.lang.IllegalArgumentException e) {
+            Log.d(Log.TAG, e.getMessage());
+        }
     }
 }

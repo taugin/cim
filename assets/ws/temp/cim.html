@@ -3,6 +3,10 @@
 	<link rel="stylesheet" href="{{ SERV_ROOT_DIR }}css/cim.css">
 	<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/jquery-1.7.2.min.js"></script>
 	<script language="javascript" type="text/javascript" src="{{ SERV_ROOT_DIR }}js/cim.js"></script>
+    <style>
+        .div-a{ float:left;width:49%;height:70%;border:1px solid #F00;overflow:auto;}
+        .div-b{ float:right;width:49%;height:70%;border:1px solid #000;overflow:auto;}
+    </style>
 </head>
 <body>
 <div>
@@ -13,7 +17,11 @@
 <input type="text" id="dialnumber"/> <input type="button" id="dialbutton" value="Dial"/><input type="button" id="endcallbutton" value="EndCall"/></br></br>
 </div>
 <input type="button" id="getsmsconversations" value="GetSmsConversations"/>
-<div id="conversations">
+
+<div id="conversations" class="div-a">
+</div>
+
+<div id="smslist" class="div-b">
 </div>
 </body>
 </html>

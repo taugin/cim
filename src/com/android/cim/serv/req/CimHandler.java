@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import net.asfun.jangod.template.Processor;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -16,14 +15,16 @@ import org.apache.http.HttpStatus;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 
-import android.content.Intent;
-import android.net.Uri;
+import android.provider.Telephony.Sms.Conversations;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.android.cim.Constants.Config;
 import com.android.cim.WSApplication;
 import com.android.cim.fun.IPhone;
 import com.android.cim.fun.ISms;
+import com.android.cim.fun.info.Conversation;
+import com.android.cim.fun.info.SmsInfo;
 import com.android.cim.serv.support.HttpPostParser;
 import com.android.cim.serv.support.Progress;
 import com.android.cim.serv.view.ViewFactory;
@@ -85,12 +86,16 @@ public class CimHandler implements HttpRequestHandler {
     }
     private HttpEntity respSmsConversationView(HttpRequest request) throws IOException {
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("conversations", mSms.getAllConversation());
+        List<Conversation> list = mSms.getAllConversation();
+        data.put("conversations", list);
+        Log.d(Log.TAG, "conversation size = " + (list != null ? list.size() : 0));
         return mViewFactory.renderTemp(request, "sms.html", data);
     }
     private HttpEntity respSmsListView(HttpRequest request, String address) throws IOException {
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("smslist", mSms.getSms(address));
+        List<SmsInfo> list = mSms.getSms(address);
+        data.put("smslist", list);
+        Log.d(Log.TAG, "smsinfo size = " + (list != null ? list.size() : 0));
         return mViewFactory.renderTemp(request, "sms.html", data);
     }
     private HttpEntity respView(HttpRequest request) throws IOException {
@@ -119,17 +124,26 @@ public class CimHandler implements HttpRequestHandler {
         Log.d(Log.TAG, "type = " + type);
         if ("sendsms".equals(type)) { // 发送短信
             String address = params.get("smsnumber");
-            address = URLDecoder.decode(address, "utf-8");
-            String smsContent = params.get("smscontent");
-            smsContent = URLDecoder.decode(smsContent, "utf-8");
-            Log.d(Log.TAG, "type = " + type + " , address = " + address + " , smsContent = " + smsContent);
-            mSms.sendSms(address, smsContent);
-        } else if ("dial".equals(type)){ // 打电话
-            String address = params.get("dialnumber");
-            Log.d(Log.TAG, "type = " + type + " , address = " + address);
             if (!TextUtils.isEmpty(address)) {
                 address = URLDecoder.decode(address, "utf-8");
-                mPhone.dial(address);
+                String smsContent = params.get("smscontent");
+                smsContent = URLDecoder.decode(smsContent, "utf-8");
+                address = address.trim();
+                Log.d(Log.TAG, "type = " + type + " , address = " + address + " , smsContent = " + smsContent);
+                mSms.sendSms(address, smsContent);
+            }
+        } else if ("dial".equals(type)){ // 打电话
+            if (mPhone.getPhoneState() == TelephonyManager.CALL_STATE_IDLE) {
+                String address = params.get("dialnumber");
+                Log.d(Log.TAG, "type = " + type + " , address = " + address);
+                if (!TextUtils.isEmpty(address)) {
+                    address = URLDecoder.decode(address, "utf-8");
+                    address = address.trim();
+                    Log.d(Log.TAG, "urlencoded address = " + address);
+                    mPhone.dial(address);
+                }
+            } else {
+
             }
         } else if ("endcall".equals(type)) { // 挂电话
             Log.d(Log.TAG, "type = " + type);

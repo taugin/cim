@@ -8,4 +8,5 @@ public class SmsInfo {
     public String date;
     public String date_sent;
     public String read;
+    public String isSend;
 }

@@ -34,9 +34,9 @@ $(document).ready(function() {
     $("a").live("click", function () {
         $.post(
             "action.do",
-            {action:"getsmslist", smsnumber:$(this).html()},
+            {action:"getsmslist", smsnumber:$(this).val()},
             function(data){
-                $("#conversations").html(data);
+                $("#smslist").html(data);
             }
         );
     });
