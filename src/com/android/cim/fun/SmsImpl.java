@@ -76,6 +76,12 @@ public class SmsImpl implements ISms {
                         int readcount = 0;// c.getInt(c.getColumnIndex("readcount"));
                         conv.readcountstr = String.valueOf(readcount);
                         conv.snippet = c.getString(c.getColumnIndex("snippet"));
+                        if (!TextUtils.isEmpty(conv.snippet)) {
+                            if (conv.snippet.length() > 50) {
+                                conv.snippet = conv.snippet.substring(0, 50);
+                                conv.snippet += "...";
+                            }
+                        }
                         int _id = c.getInt(c.getColumnIndex("_id"));
                         conv.address = getAddress(_id);
                         conv.name = getNameFromContact(mContext, conv.address);

@@ -89,12 +89,13 @@ public class CimHandler implements HttpRequestHandler {
         List<Conversation> list = mSms.getAllConversation();
         data.put("conversations", list);
         Log.d(Log.TAG, "conversation size = " + (list != null ? list.size() : 0));
-        return mViewFactory.renderTemp(request, "sms.html", data);
+        return mViewFactory.renderTemp(request, "conversations.html", data);
     }
     private HttpEntity respSmsListView(HttpRequest request, String address) throws IOException {
         Map<String, Object> data = new HashMap<String, Object>();
         List<SmsInfo> list = mSms.getSms(address);
         data.put("smslist", list);
+        data.put("address", address);
         Log.d(Log.TAG, "smsinfo size = " + (list != null ? list.size() : 0));
         return mViewFactory.renderTemp(request, "sms.html", data);
     }

@@ -33,7 +33,7 @@
             float:left;
             width:32.5%;
             height:100%;
-            background-color:#AAA;
+            background-color:#FFF;
             border:1px solid #AAA;
             margin-left:12px;
             overflow:auto;
@@ -94,6 +94,22 @@
             text-align: left;
             z-index: 100;
             }
+        .sms_content {
+            float:left;
+            width:80%;
+            max-width:80%;
+            height:100px;
+            font-size:30px; 
+            color:#00F;
+            border:1px solid #F00;
+        }
+        .sms_send {
+            float:right;
+            width:20%;
+            height:100px;
+            font-size:30px; 
+            color:#00F;
+        }
     </style>
 </head>
 <body>
@@ -128,6 +144,10 @@
         <ul>
             <li style="width:100%"><button id="dial_button" >拨号</button></li>
         </ul>
+    </div>
+    <div style="margin-top:10px">
+        <textarea class="sms_content" id="smscontent"></textarea>
+        <button id="smssend" class="sms_send">发短信</button>
     </div>
 </div>
 <div id="contacts" class="contacts">

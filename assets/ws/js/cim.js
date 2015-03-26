@@ -49,19 +49,32 @@ $(document).ready(function() {
         requestSms();
     });
 
-    $("#smsbutton").click(function () {
+    $("#smsbutton").live("click", function () {
+        var number = $("#smsnumber").html();
+        var content = $("#smscontent").val();
+        alert("Number : " + number + "\nContent : " + content);
         $.post(
         "action.do",
-        {action:"sendsms",smsnumber:$("#smsnumber").val(),smscontent:$("#smscontent").val()}
+        {action:"sendsms",smsnumber:number,smscontent:content}
+        );
+    });
+
+    $("#smssend").click(function () {
+        var number = $("#phonenumber").val();
+        var content = $("#smscontent").val();
+        alert("Number : " + number + "\nContent : " + content);
+        $.post(
+        "action.do",
+        {action:"sendsms",smsnumber:number,smscontent:content}
         );
     });
     
-    $("#dialbutton").click(function () {
-        var dialnumber = $("#dialnumber").val();
+    $("#dial_button").click(function () {
+        var dialnumber = $("#phonenumber").val();
         alert(dialnumber);
         $.post(
             "action.do",
-            {action:"dial",dialnumber:$("#dialnumber").val()}
+            {action:"dial",dialnumber:$("#phonenumber").val()}
         );
     });
     
@@ -82,11 +95,12 @@ $(document).ready(function() {
         );
     });
     $("a").live("click", function () {
-        generateConversation();
+        var number = $(this).children().val();
         $.post(
             "action.do",
-            {action:"getsmslist", smsnumber:$(this).val()},
+            {action:"getsmslist", smsnumber:number},
             function(data){
+                generateConversation();
                 $("#smsconversation").html(data);
             }
         );
@@ -97,10 +111,14 @@ $(document).ready(function() {
         $("#sms").show();
     });
 
+    $("#smsnumber").live("click", function() {
+        $("#phonenumber").attr("value", $("#smsnumber").html());
+    });
+
     $(".dial_num_button").click(function (){
-        var s = $("#smscontent").val();
+        var s = $("#phonenumber").val();
         s += $(this).val();
-        $("#smscontent").attr("value", s);
+        $("#phonenumber").attr("value", s);
     });
     $("#phone_dial_delete").click(function (){
         var s = $("#phonenumber").val();
@@ -119,7 +137,7 @@ $(document).ready(function() {
 
 	$("#phone_dial_delete").bind("mousedown", function() { 
 	    timeout = setTimeout(function() { 
-	        $("#smscontent").attr("value", "");
+	        $("#phonenumber").attr("value", "");
 	    }, 2000); 
 	}); 
 	

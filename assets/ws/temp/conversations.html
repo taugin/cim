@@ -1,0 +1,13 @@
+{% if conversations %}
+<table border="1">
+{% for row in conversations%}
+<tr>
+<td>
+<a href="javascript:void(0);"><input type="hidden" value="{{row.address}}"/>{{row.address}}{%if row.name%}({{row.name}}){%endif%}</a><br>
+<span>{{row.snippet}}</span><br>
+<span>{{row.datestr}}</span>
+</td>
+</tr>
+{% endfor %}
+<table>
+{% endif %}

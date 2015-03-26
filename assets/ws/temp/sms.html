@@ -1,21 +1,26 @@
-<button id="back">返回</button>
-{% if conversations %}
-{% for row in conversations%}
-<div>
-<p><a href="javascript:void(0);" value="{{row.address}}">{{row.address}}{%if row.name%}({{row.name}}){%endif%}</a>     {{row.datestr}}</p>
-<p>{{row.snippet}}</p>
-<hr/>
+<div style="height:30px;clear:both">
+<div style="float:left;width:8%;height:100%">
+<button id="back" style="height:100%;width:50px">返回</button>
 </div>
-{% endfor %}
-{% endif %}
-
-
+<div style="float:left;width:80%;height:100%;line-height:30px;text-align:center">
+<center id="smsnumber">{{address}}</center>
+</div>
+</div>
 {% if smslist %}
+<div style="overflow:auto;height:95%;width:100%">
+<table border="1" width="100%">
 {% for row in smslist%}
-<div>
-<p>{{row.address}}{%if row.name%}({{row.name}}){%endif%} {{row.date}}{%if row.isSend%}<font color="red">--发送</font>{%else%}<font color="green">--接收</font>{%endif%}</p>
-<p>{{row.body}}</p>
-<hr/>
-</div>
+<tr style="width:100%">
+<td>
+<p align=center>{{row.date}}</p>
+{%if row.isSend%}
+<p align="right">{{row.body}}</p>
+{%else%}
+<p align="left">{{row.body}}</p>
+{%endif%}
+</td>
+</tr>
 {% endfor %}
+</table>
+</div>
 {% endif %}
