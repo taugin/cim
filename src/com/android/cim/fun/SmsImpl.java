@@ -62,7 +62,7 @@ public class SmsImpl implements ISms {
         List<Conversation> convList = null;;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ahh:mm");
         try {
-            c = mContext.getContentResolver().query(CONVERSATION_URI, ALL_THREADS_PROJECTION, null, null, "date desc");
+            c = mContext.getContentResolver().query(CONVERSATION_URI, /*ALL_THREADS_PROJECTION*/null, null, null, "date desc");
             if (c != null) {
                 if (c.moveToFirst()) {
                     convList = new ArrayList<Conversation>();
@@ -73,20 +73,30 @@ public class SmsImpl implements ISms {
                         int msgcount = c.getInt(c.getColumnIndex("message_count"));
                         conv.msgcountstr = String.valueOf(msgcount);
                         conv.recipient_ids = c.getString(c.getColumnIndex("recipient_ids"));
-                        int readcount = c.getInt(c.getColumnIndex("readcount"));
+                        int readcount = 0;// c.getInt(c.getColumnIndex("readcount"));
                         conv.readcountstr = String.valueOf(readcount);
                         conv.snippet = c.getString(c.getColumnIndex("snippet"));
                         int _id = c.getInt(c.getColumnIndex("_id"));
                         conv.address = getAddress(_id);
                         conv.name = getNameFromContact(mContext, conv.address);
-                        // Log.d("taugin", "address = " + conv.address);
+                        Log.d("taugin", "address = " + conv.address);
                         convList.add(conv);
                     } while (c.moveToNext());
+                }
+                if (c.moveToFirst()) {
+                    int colCount = c.getColumnCount();
+                    String colName = null;
+                    String colValue = null;
+                    for (int index = 0; index < colCount; index++) {
+                        colName = c.getColumnName(index);
+                        colValue = c.getString(c.getColumnIndex(colName));
+                        Log.d(Log.TAG, colName + " : " + colValue);
+                    }
                 }
             }
         } catch (Exception e) {
             convList = null;
-            e.printStackTrace();
+            Log.d(Log.TAG, "error : " + e);
         } finally {
             if (c != null) {
                 c.close();
@@ -107,7 +117,8 @@ public class SmsImpl implements ISms {
         Log.d(Log.TAG, "selection = " + selection);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd h:mm a");
         try {
-            c = mContext.getContentResolver().query(MMSSMS_URI, SMS_PROJECTION, selection, null, "date desc");
+            c = mContext.getContentResolver().query(MMSSMS_URI, /*SMS_PROJECTION*/
+                    null, selection, null, "date desc");
             if (c != null) {
                 if (c.moveToFirst()) {
                     smsInfoList = new ArrayList<SmsInfo>();

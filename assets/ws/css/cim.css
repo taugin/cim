@@ -4,3 +4,20 @@ height: 100px;
 max-width: 200px;
 max-height: 100px;
 }
+
+.phone_dial {
+    width:30%;
+    height:100%;
+    background-color:#AAA;
+    border:1px;
+}
+
+.phone_dial_textarea {
+    border:none;
+    overflow:hidden;
+    border:1px;
+    width: 500px;
+    height: 100px;
+    max-width: 500px;
+    max-height: 100px;
+}

@@ -100,7 +100,7 @@ public class CimHandler implements HttpRequestHandler {
     }
     private HttpEntity respView(HttpRequest request) throws IOException {
         Map<String, Object> data = new HashMap<String, Object>();
-        return mViewFactory.renderTemp(request, "cim.html", data);
+        return mViewFactory.renderTemp(request, "cim_tmp.html", data);
     }
     private HttpEntity resp403(HttpRequest request) throws IOException {
         return mViewFactory.renderTemp(request, "403.html");
