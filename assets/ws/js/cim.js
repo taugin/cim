@@ -43,45 +43,134 @@ $(document).ready(function() {
         divele.show().appendTo("body");
         $("#sms").hide();
     }
+
+    function createEndCall() {
+        var w = $("#dial_button_layout").width();
+        var h = $("#dial_button").height();
+        var t = $("#dial_button").offset().top;
+        var l = $("#dial_button").offset().left;
+        var index = $("#dial_button").css("z-index");
+        //alert("w : " + w + " , h : " + h + " , top : " + t + " , left : " + l + " , index : " + index);
+        var styleStr = "top:" + t + ";left:" + l + ";position:fixed;z-index:10000;background:#F00;width:" + w + "px;height:" + h + "px;";
+        var isIe = (document.all) ? true : false;
+        var isIE6 = isIe && !window.XMLHttpRequest;
+        styleStr += (isIe) ? "filter:alpha(opacity=80);" : "opacity:0.8;";
+        var divele = $("<div></div>");
+        divele.attr("id", "endcalllayout");
+        t += 1;
+        h += 4;
+        w += 2;
+        divele.css({"top":t + 'px',"left":l + 'px', "position":"absolute", "z-index":"10000", "background":"#FF0", "width":w + 'px', "height":h + 'px', "overflow":"auto"});
+        var p =  $("<p id='call_time'>Time:</p>");
+        p.css({"float":"left", "text-align":"left", "width":"80%", "background-color":"#AAF",
+             "inline-height":h+"px", "height":h+"px", "vertical-align":"middle",
+              "display":"inline-block", "margin":"0", "border":"0px solid #F00"});
+        var endbutton = $("<button id='endcallbutton'>挂断</button>")
+        endbutton.css({"float":"right", "width":"20%", "height":"100%", "font-size":"30px"});
+        divele.append(p, endbutton);
+        divele.show().appendTo("body");
+        //$("#dial_button").hide();
+    }
+
+    function queryPhoneState() {
+        //alert("queryPhoneState");
+        $.post(
+            "action.do",
+            {action:"queryphonestate"},
+            function(data) {
+                if ("0" == data) {
+                    $("#endcalllayout").remove();
+                } else {
+                    setTimeout(queryPhoneState, 1000);
+                }
+            }
+        );
+    }
+
+    function needCreateEndCall() {
+        $.post(
+            "action.do",
+            {action:"queryphonestate"},
+            function(data) {
+                if ("0" != data) {
+                    createEndCall();
+                    setTimeout(queryPhoneState, 1000);
+                }
+            }
+        );
+    }
+    
+    function querysmsstate() {
+        $.post(
+            "action.do",
+            {action:"querysmsstate"},
+            function(data) {
+                if ("2" == data) {
+                    $("#smscontent").attr("value", "");
+                    $("#smssend").removeAttr("disabled");
+                    alert("短信发送成功");
+                } else {
+                    setTimeout(querysmsstate, 1000);
+                }
+            }
+        );
+    }
+
     $(window).load(function() {
         setlayoutsize();
         requestContacts();
         requestSms();
-    });
-
-    $("#smsbutton").live("click", function () {
-        var number = $("#smsnumber").html();
-        var content = $("#smscontent").val();
-        alert("Number : " + number + "\nContent : " + content);
-        $.post(
-        "action.do",
-        {action:"sendsms",smsnumber:number,smscontent:content}
-        );
+        needCreateEndCall();
     });
 
     $("#smssend").click(function () {
         var number = $("#phonenumber").val();
         var content = $("#smscontent").val();
-        alert("Number : " + number + "\nContent : " + content);
+        if (number.length <= 0 || content.length <= 0) {
+            alert("号码或内容不能为空");
+            return ;
+        }
+        if (!number.match(/^1\d{10}$/)) {
+            alert("手机号码格式不正确");
+            return;
+        }
+        var value = confirm("确定要发送短信给 : " + number);
+        if (!value) {
+            alert("取消发送短信");
+            return ;
+        }
+        $("#smssend").attr("disabled", "disabled");
         $.post(
-        "action.do",
-        {action:"sendsms",smsnumber:number,smscontent:content}
+	        "action.do",
+	        {action:"sendsms",smsnumber:number,smscontent:content},
+	        function() {
+	            setTimeout(querysmsstate, 1000);
+	        }
         );
     });
-    
+
     $("#dial_button").click(function () {
+        createEndCall();
         var dialnumber = $("#phonenumber").val();
         alert(dialnumber);
         $.post(
             "action.do",
-            {action:"dial",dialnumber:$("#phonenumber").val()}
+            {action:"dial",dialnumber:$("#phonenumber").val()},
+            function(data) {
+                if ("dial" == data) {
+                    setTimeout(queryPhoneState, 3000);
+                }
+            }
         );
     });
-    
-    $("#endcallbutton").click(function (){
+
+    $("#endcallbutton").live("click", function (){
         $.post(
-        "action.do",
-        {action:"endcall"}
+	        "action.do",
+	        {action:"endcall"},
+	        function(data) {
+	            $("#endcalllayout").remove();
+	        }
         );
     });
 

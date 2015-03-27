@@ -84,9 +84,15 @@ public class SmsImpl implements ISms {
                         }
                         int _id = c.getInt(c.getColumnIndex("_id"));
                         conv.address = getAddress(_id);
-                        conv.name = getNameFromContact(mContext, conv.address);
-                        Log.d("taugin", "address = " + conv.address);
-                        convList.add(conv);
+                        Log.d("taugin", "id : " + _id + " , address = " + conv.address);
+                        if (!TextUtils.isEmpty(conv.address)) {
+                            int index = conv.address.indexOf(':');
+                            if (index != -1) {
+                                conv.address = conv.address.substring(0, index);
+                            }
+                            conv.name = getNameFromContact(mContext, conv.address);
+                            convList.add(conv);
+                        }
                     } while (c.moveToNext());
                 }
                 if (c.moveToFirst()) {
@@ -118,7 +124,7 @@ public class SmsImpl implements ISms {
         List<SmsInfo> smsInfoList = null;
         String selection = null;
         if (!TextUtils.isEmpty(address)) {
-            selection = "address like '%" + address + "'";
+            selection = "address like '%" + address + "%'";
         }
         Log.d(Log.TAG, "selection = " + selection);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd h:mm a");
@@ -221,7 +227,7 @@ public class SmsImpl implements ISms {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            setSmsState(SMS_STATE_NORMAL);
+            setSmsState(SMS_STATE_SENT);
             context.unregisterReceiver(this);
         }
     };
@@ -243,5 +249,10 @@ public class SmsImpl implements ISms {
             }
         }
         return null;
+    }
+
+    @Override
+    public void resetSmsState() {
+        setSmsState(SMS_STATE_NORMAL);
     }
 }

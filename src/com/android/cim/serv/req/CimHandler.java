@@ -12,6 +12,7 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 
@@ -142,9 +143,12 @@ public class CimHandler implements HttpRequestHandler {
                     address = address.trim();
                     Log.d(Log.TAG, "urlencoded address = " + address);
                     mPhone.dial(address);
+                    String s = "dial";
+                    entity = new StringEntity(s, Config.ENCODING);
                 }
             } else {
-
+                String s = "busy";
+                entity = new StringEntity(s, Config.ENCODING);
             }
         } else if ("endcall".equals(type)) { // 挂电话
             Log.d(Log.TAG, "type = " + type);
@@ -161,6 +165,14 @@ public class CimHandler implements HttpRequestHandler {
             }
             Log.d(Log.TAG, "type = " + type + " , address = " + address);
             entity = respSmsListView(request, address);
+        } else if ("queryphonestate".equals(type)) {
+            String s = String.valueOf(mPhone.getPhoneState());
+            entity = new StringEntity(s, Config.ENCODING);
+        } else if ("querysmsstate".equals(type)) {
+            String s = String.valueOf(mSms.getSmsState());
+            entity = new StringEntity(s, Config.ENCODING);
+        } else if ("resetsmsstate".equals(type)) {
+            mSms.resetSmsState();
         }
         String contentType = "text/html;charset=" + Config.ENCODING;
         response.setHeader("Content-Type", contentType);

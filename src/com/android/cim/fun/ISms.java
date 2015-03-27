@@ -15,4 +15,5 @@ public interface ISms {
     List<SmsInfo> getSms(String address);
     int sendSms(String address, String smsContent);
     int getSmsState();
+    void resetSmsState();
 }
