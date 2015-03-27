@@ -164,9 +164,15 @@ $(document).ready(function() {
     });
 
     $("#dial_button").click(function () {
-        createEndCall();
         var dialnumber = $("#phonenumber").val();
-        alert(dialnumber);
+        if (dialnumber == "") {
+            alert("电话号码为空");
+            return;
+        }
+        if (!confirm("确定要拨打此号码 ：" + dialnumber + " ?")) {
+            return;
+        }
+        createEndCall();
         $.post(
             "action.do",
             {action:"dial",dialnumber:$("#phonenumber").val()},
