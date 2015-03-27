@@ -1,5 +1,8 @@
 package com.android.cim.fun;
 
+import com.android.cim.WSApplication;
+import com.android.cim.manager.TmpStorageManager;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -37,6 +40,44 @@ public class PhoneImpl implements IPhone {
         if (getPhoneState() != TelephonyManager.CALL_STATE_IDLE) {
             Telephony.getInstance(mContext).endCall();
         }
+    }
+
+    @Override
+    public String getExpTime() {
+        long startTime = TmpStorageManager.getStartTime(mContext);
+        if (startTime == 0) {
+            return "";
+        } else {
+            long curTime = System.currentTimeMillis();
+            long expTime = curTime - startTime;
+            return change(expTime / 1000);
+        }
+    }
+
+    public String change(long second) {
+        long h = 0;
+        long d = 0;
+        long s = 0;
+        long temp = second % 3600;
+        if (second > 3600) {
+            h = second / 3600;
+            if (temp != 0) {
+                if (temp > 60) {
+                    d = temp / 60;
+                    if (temp % 60 != 0) {
+                        s = temp % 60;
+                    }
+                } else {
+                    s = temp;
+                }
+            }
+        } else {
+            d = second / 60;
+            if (second % 60 != 0) {
+                s = second % 60;
+            }
+        }
+        return String.format("%02d:%02d:%02d", h, d, s);
     }
 
 }

@@ -16,16 +16,19 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 
+import android.content.Context;
 import android.provider.Telephony.Sms.Conversations;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import com.android.cim.Constants;
 import com.android.cim.Constants.Config;
 import com.android.cim.WSApplication;
 import com.android.cim.fun.IPhone;
 import com.android.cim.fun.ISms;
 import com.android.cim.fun.info.Conversation;
 import com.android.cim.fun.info.SmsInfo;
+import com.android.cim.manager.TmpStorageManager;
 import com.android.cim.serv.support.HttpPostParser;
 import com.android.cim.serv.support.Progress;
 import com.android.cim.serv.view.ViewFactory;
@@ -167,7 +170,9 @@ public class CimHandler implements HttpRequestHandler {
             entity = respSmsListView(request, address);
         } else if ("queryphonestate".equals(type)) {
             String s = String.valueOf(mPhone.getPhoneState());
-            entity = new StringEntity(s, Config.ENCODING);
+            String expTime = mPhone.getExpTime();
+            String out = "{\"state\":" + s + ",\"time\":\"" + expTime + "\"}";
+            entity = new StringEntity(out, Config.ENCODING);
         } else if ("querysmsstate".equals(type)) {
             String s = String.valueOf(mSms.getSmsState());
             entity = new StringEntity(s, Config.ENCODING);

@@ -14,4 +14,6 @@ public interface IPhone {
     long getPhoneTime();
 
     void endCall();
+
+    String getExpTime();
 }

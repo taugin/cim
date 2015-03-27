@@ -12,10 +12,6 @@ $(document).ready(function() {
         $("#div_all").height(phonedialh);
     }
 
-    function requestContacts() {
-    
-    }
-    
     function requestSms() {
         $.post(
             "action.do",
@@ -59,17 +55,19 @@ $(document).ready(function() {
         divele.attr("id", "endcalllayout");
         t += 1;
         h += 4;
-        w += 2;
         divele.css({"top":t + 'px',"left":l + 'px', "position":"absolute", "z-index":"10000", "background":"#FF0", "width":w + 'px', "height":h + 'px', "overflow":"auto"});
-        var p =  $("<p id='call_time'>Time:</p>");
-        p.css({"float":"left", "text-align":"left", "width":"80%", "background-color":"#AAF",
-             "inline-height":h+"px", "height":h+"px", "vertical-align":"middle",
-              "display":"inline-block", "margin":"0", "border":"0px solid #F00"});
         var endbutton = $("<button id='endcallbutton'>挂断</button>")
-        endbutton.css({"float":"right", "width":"20%", "height":"100%", "font-size":"30px"});
-        divele.append(p, endbutton);
+        endbutton.css({"float":"right", "width":"100%", "height":"100%", "font-size":"50px", "color":"red"});
+        divele.append(endbutton);
         divele.show().appendTo("body");
         //$("#dial_button").hide();
+    }
+
+     /***
+     * 判断返回是否json格式
+     */
+    function isJson(obj){
+        return typeof(obj) == "object";
     }
 
     function queryPhoneState() {
@@ -78,9 +76,14 @@ $(document).ready(function() {
             "action.do",
             {action:"queryphonestate"},
             function(data) {
-                if ("0" == data) {
+                if (!isJson(data)) data = eval('('+data+')');
+                if ("0" == data.state) {
                     $("#endcalllayout").remove();
+                    $("#call_time").html("就绪");
                 } else {
+                    if (data.time != "") {
+                        $("#call_time").html(data.time);
+                    }
                     setTimeout(queryPhoneState, 1000);
                 }
             }
@@ -92,7 +95,8 @@ $(document).ready(function() {
             "action.do",
             {action:"queryphonestate"},
             function(data) {
-                if ("0" != data) {
+                if (!isJson(data)) data = eval('('+data+')');
+                if ("0" != data.state) {
                     createEndCall();
                     setTimeout(queryPhoneState, 1000);
                 }
@@ -118,7 +122,6 @@ $(document).ready(function() {
 
     $(window).load(function() {
         setlayoutsize();
-        requestContacts();
         requestSms();
         needCreateEndCall();
     });
