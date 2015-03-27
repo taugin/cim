@@ -4,7 +4,7 @@ $(document).ready(function() {
         var phonedialw = $("#phone_dial").width();
         var phonedialh = $("#phone_dial").height();
 
-        var contactsw = $("#contacts").width();
+        var contactsw = $("#recordlist").width();
 
         var smsw = $("#sms").width();
         var divw = phonedialw + contactsw + smsw;
@@ -18,6 +18,16 @@ $(document).ready(function() {
             {action:"getsmsconversations"},
             function(data){
                 $("#sms").html(data);
+            }
+        );
+    }
+    
+    function requestRecords() {
+        $.post(
+            "action.do",
+            {action:"recordlist"},
+            function(data){
+                $("#recordlist").html(data);
             }
         );
     }
@@ -122,7 +132,8 @@ $(document).ready(function() {
 
     $(window).load(function() {
         setlayoutsize();
-        requestSms();
+        requestRecords();
+        //requestSms();
         needCreateEndCall();
     });
 
@@ -186,7 +197,7 @@ $(document).ready(function() {
             }
         );
     });
-    $("a").live("click", function () {
+    $(".sms_href").live("click", function () {
         var number = $(this).children().val();
         $.post(
             "action.do",

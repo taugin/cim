@@ -1,0 +1,9 @@
+{% if recordlist %}
+<ul>
+{% for row in recordlist %}
+<li style="list-style:none;float:left;margin:0">
+<label>{{row}}</label>&nbsp;&nbsp;<a href="{{path}}{{row}}">下载</a>
+</li>
+{% endfor %}
+<ul>
+{% endif %}

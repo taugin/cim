@@ -16,8 +16,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 
-import android.content.Context;
-import android.provider.Telephony.Sms.Conversations;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
@@ -28,7 +26,6 @@ import com.android.cim.fun.IPhone;
 import com.android.cim.fun.ISms;
 import com.android.cim.fun.info.Conversation;
 import com.android.cim.fun.info.SmsInfo;
-import com.android.cim.manager.TmpStorageManager;
 import com.android.cim.serv.support.HttpPostParser;
 import com.android.cim.serv.support.Progress;
 import com.android.cim.serv.view.ViewFactory;
@@ -83,6 +80,9 @@ public class CimHandler implements HttpRequestHandler {
             entity = resp403(request);
         }
 
+        if (target.endsWith(".amr")) {
+            contentType = "application/octet-stream";
+        }
         response.setHeader("Content-Type", contentType);
         response.setEntity(entity);
 
@@ -103,6 +103,17 @@ public class CimHandler implements HttpRequestHandler {
         Log.d(Log.TAG, "smsinfo size = " + (list != null ? list.size() : 0));
         return mViewFactory.renderTemp(request, "sms.html", data);
     }
+
+    private HttpEntity respRecordListView(HttpRequest request)
+            throws IOException {
+        Map<String, Object> data = new HashMap<String, Object>();
+        List<String> list = mPhone.getRecordFiles();
+        data.put("recordlist", list);
+        data.put("path", Constants.RECORD_PATH);
+        Log.d(Log.TAG, "record size = " + (list != null ? list.size() : 0));
+        return mViewFactory.renderTemp(request, "recordlist.html", data);
+    }
+
     private HttpEntity respView(HttpRequest request) throws IOException {
         Map<String, Object> data = new HashMap<String, Object>();
         return mViewFactory.renderTemp(request, "cim_tmp.html", data);
@@ -178,6 +189,8 @@ public class CimHandler implements HttpRequestHandler {
             entity = new StringEntity(s, Config.ENCODING);
         } else if ("resetsmsstate".equals(type)) {
             mSms.resetSmsState();
+        } else if ("recordlist".equals(type)) {
+            entity = respRecordListView(request);
         }
         String contentType = "text/html;charset=" + Config.ENCODING;
         response.setHeader("Content-Type", contentType);

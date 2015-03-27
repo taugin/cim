@@ -1,5 +1,7 @@
 package com.android.cim.fun;
 
+import java.util.List;
+
 import android.telephony.TelephonyManager;
 
 public interface IPhone {
@@ -16,4 +18,6 @@ public interface IPhone {
     void endCall();
 
     String getExpTime();
+
+    List<String> getRecordFiles();
 }

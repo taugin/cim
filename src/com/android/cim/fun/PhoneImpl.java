@@ -1,12 +1,17 @@
 package com.android.cim.fun;
 
-import com.android.cim.WSApplication;
-import com.android.cim.manager.TmpStorageManager;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
+
+import com.android.cim.Constants;
+import com.android.cim.manager.TmpStorageManager;
 
 public class PhoneImpl implements IPhone {
 
@@ -78,6 +83,19 @@ public class PhoneImpl implements IPhone {
             }
         }
         return String.format("%02d:%02d:%02d", h, d, s);
+    }
+
+    public List<String> getRecordFiles() {
+        File dir = new File(Constants.RECORD_PATH);
+        String files[] = dir.list();
+        ArrayList<String> list = new ArrayList<String>();
+        for (String file : files) {
+            if (".nomedia".equals(file)) {
+                continue;
+            }
+            list.add(file);
+        }
+        return list;
     }
 
 }
