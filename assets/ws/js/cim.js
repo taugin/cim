@@ -133,7 +133,7 @@ $(document).ready(function() {
     $(window).load(function() {
         setlayoutsize();
         requestRecords();
-        //requestSms();
+        requestSms();
         needCreateEndCall();
     });
 
