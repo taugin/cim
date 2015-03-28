@@ -25,6 +25,7 @@ import com.android.cim.WSApplication;
 import com.android.cim.fun.IPhone;
 import com.android.cim.fun.ISms;
 import com.android.cim.fun.info.Conversation;
+import com.android.cim.fun.info.RecordItem;
 import com.android.cim.fun.info.SmsInfo;
 import com.android.cim.serv.support.HttpPostParser;
 import com.android.cim.serv.support.Progress;
@@ -107,7 +108,7 @@ public class CimHandler implements HttpRequestHandler {
     private HttpEntity respRecordListView(HttpRequest request)
             throws IOException {
         Map<String, Object> data = new HashMap<String, Object>();
-        List<String> list = mPhone.getRecordFiles();
+        List<RecordItem> list = mPhone.getRecordFiles();
         data.put("recordlist", list);
         data.put("path", Constants.RECORD_PATH);
         Log.d(Log.TAG, "record size = " + (list != null ? list.size() : 0));
@@ -191,6 +192,15 @@ public class CimHandler implements HttpRequestHandler {
             mSms.resetSmsState();
         } else if ("recordlist".equals(type)) {
             entity = respRecordListView(request);
+        } else if ("deleterecord".equals(type)) {
+            boolean result = false;
+            String recordFile = params.get("recordfile");
+            if (!TextUtils.isEmpty(recordFile)) {
+                recordFile = URLDecoder.decode(recordFile, "utf-8");
+                Log.d(Log.TAG, "recordFile : " + recordFile);
+                result = mPhone.deleteRecord(recordFile);
+            }
+            entity = new StringEntity(result ? "success" : "failure", Config.ENCODING);
         }
         String contentType = "text/html;charset=" + Config.ENCODING;
         response.setHeader("Content-Type", contentType);

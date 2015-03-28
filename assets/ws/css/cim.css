@@ -1,23 +1,119 @@
-.textarea {
-width: 200px;
-height: 100px;
-max-width: 200px;
-max-height: 100px;
+.loadingbox {
+    display: none;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px black;
+    padding: 10px;
+    font-size: 12px;
+    position: absolute;
+    text-align: center;
+    background: #fff;
+    z-index: 100000;
 }
 
+body{
+    text-align:center;
+    width:100%;
+    margin:0 atuto;
+}
 .phone_dial {
-    width:30%;
+    float:left;
+    width:500px;
     height:100%;
     background-color:#AAA;
-    border:1px;
+    border:1px solid #AAA;
+    overflow:auto;
 }
-
+.recordlist {
+    float:left;
+    width:500px;
+    height:100%;
+    background-color:#AAA;
+    border:1px solid #AAA;
+    margin-left:10px;
+    overflow:auto;
+}
+.sms {
+    float:left;
+    width:500px;
+    height:100%;
+    background-color:#FFF;
+    border:1px solid #AAA;
+    margin-left:10px;
+    overflow:auto;
+}
 .phone_dial_textarea {
-    border:none;
+    float:left;
     overflow:hidden;
     border:1px;
-    width: 500px;
+    width: 80%;
     height: 100px;
-    max-width: 500px;
-    max-height: 100px;
+    font-size:50px; 
+    color:#F00;
+    line-height:100px;
+    border:1px solid #AAA;
+}
+.phone_dial_delete{
+    float:right;
+    width: 20%;
+    height: 100px;
+    margin:0;
+}
+#dial_button_layout {
+    float:bottom;
+    width:100%;
+    valign:bottom;
+}
+#dial_button_layout li {
+    float:left;
+    list-style:none;
+    padding:0;
+    margin:0;
+    width:33%;
+    height:100px;
+    background-color:red;
+    margin-top:10px;
+}
+#dial_button_layout ul {
+    width:100%;
+    float:left;
+    margin:0;
+    padding:0;
+}
+.dial_num_button {
+    width:100%;
+    height:100%;
+    font-size:50px; 
+    color:#00F;
+}
+#dial_button {
+    width:100%;
+    height:100%;
+    font-size:50px; 
+    color:#00F;
+}
+#smsconversation {
+    background-color:#ccc;
+    height: 100px;
+    text-align: left;
+    z-index: 100;
+    }
+.sms_content {
+    float:left;
+    width:80%;
+    max-width:80%;
+    min-height:100px;
+    max-height:100px;
+    height:100px;
+    font-size:30px; 
+    color:#00F;
+    border:1px solid #F00;
+}
+.sms_send {
+    float:right;
+    width:20%;
+    height:100px;
+    font-size:30px; 
+    color:#00F;
 }

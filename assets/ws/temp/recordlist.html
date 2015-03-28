@@ -1,9 +1,19 @@
+<div style="height:30px;clear:both">
+<button style="height:100%" id="updaterecordlist">更新录音列表</button>
+</div>
+<div style="overflow:auto;height:95%;width:100%">
 {% if recordlist %}
-<ul>
+<table style="border:1px solid #AFA;float:left;width:100%">
 {% for row in recordlist %}
-<li style="list-style:none;float:left;margin:0">
-<label>{{row}}</label>&nbsp;&nbsp;<a href="{{path}}{{row}}">下载</a>
-</li>
+<tr>
+<td>{{row.no}}.&nbsp;</td>
+<td>{{row.filename}}</td>
+<td>{{row.filetime}}</td>
+<td>{{row.filesize}}</td>
+<td><a href="{{path}}{{row.filename}}">下载</a></td>
+<td><a class="delete_recordfile" href="javascript:void(0);"><input type="hidden" value="{{path}}{{row.filename}}"/>删除</a></td>
+</tr>
 {% endfor %}
-<ul>
+</table>
 {% endif %}
+</div>

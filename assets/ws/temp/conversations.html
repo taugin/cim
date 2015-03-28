@@ -1,5 +1,9 @@
+<div style="height:30px;clear:both">
+<button style="height:100%" id="updatesmslist">更新短信列表</button>
+</div>
+<div style="overflow:auto;height:95%;width:100%">
 {% if conversations %}
-<table border="1">
+<table border="1" style="overflow:auto">
 {% for row in conversations%}
 <tr>
 <td>
@@ -9,5 +13,6 @@
 </td>
 </tr>
 {% endfor %}
-<table>
+</table>
 {% endif %}
+</div>

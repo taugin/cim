@@ -4,6 +4,8 @@ import java.util.List;
 
 import android.telephony.TelephonyManager;
 
+import com.android.cim.fun.info.RecordItem;
+
 public interface IPhone {
     static final int IDLE = TelephonyManager.CALL_STATE_IDLE;
     static final int OFFHOOK = TelephonyManager.CALL_STATE_OFFHOOK;
@@ -19,5 +21,7 @@ public interface IPhone {
 
     String getExpTime();
 
-    List<String> getRecordFiles();
+    List<RecordItem> getRecordFiles();
+    
+    boolean deleteRecord(String file);
 }

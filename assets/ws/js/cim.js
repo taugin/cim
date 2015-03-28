@@ -8,28 +8,37 @@ $(document).ready(function() {
 
         var smsw = $("#sms").width();
         var divw = phonedialw + contactsw + smsw;
+
         $("#div_all").width(divw);
         $("#div_all").height(phonedialh);
     }
 
     function requestSms() {
+        showSmsLoading("短信列表加载中...");
         $.post(
             "action.do",
             {action:"getsmsconversations"},
             function(data){
                 $("#sms").html(data);
+                removeLoading();
             }
-        );
+        ).error(function () {
+            removeLoading();
+        });
     }
     
     function requestRecords() {
+        showRecordsLoading("录音列表加载中...");
         $.post(
             "action.do",
             {action:"recordlist"},
             function(data){
                 $("#recordlist").html(data);
+                removeLoading();
             }
-        );
+        ).error(function () {
+            removeLoading();
+        });
     }
 
     function generateConversation() {
@@ -39,17 +48,73 @@ $(document).ready(function() {
         var l = $("#sms").offset().left;
         var index = $("#sms").css("z-index");
         //alert("w : " + w + " , h : " + h + " , top : " + t + " , left : " + l + " , index : " + index);
-        var styleStr = "top:" + t + ";left:" + l + ";position:fixed;z-index:10000;background:#F00;width:" + w + "px;height:" + h + "px;";
+        var styleStr = "top:" + t + "px;left:" + l + "px;position:absolute;z-index:10000;background:#FFF;width:" + w + "px;height:" + h + "px;overflow:auto;";
         var isIe = (document.all) ? true : false;
         var isIE6 = isIe && !window.XMLHttpRequest;
         styleStr += (isIe) ? "filter:alpha(opacity=80);" : "opacity:0.8;";
         var divele = $("<div></div>");
         divele.attr("id", "smsconversation");
-        divele.css({"top":t + 'px',"left":l + 'px', "position":"absolute", "z-index":"10000", "background":"#888", "width":w + 'px', "height":h + 'px', "overflow":"auto"});
+        //divele.css({"top":t + 'px',"left":l + 'px', "position":"absolute", "z-index":"10000", "background":"#888", "width":w + 'px', "height":h + 'px', "overflow":"auto"});
+        divele.attr("style", styleStr);
         divele.show().appendTo("body");
         $("#sms").hide();
     }
+    
+    function showLoading(mode, msg) {
+        var w, h, t, l;
+        if (mode == 1) {
+            w = $("#sms").width();
+            h = $("#sms").height();
+            t = $("#sms").offset().top;
+            l = $("#sms").offset().left;
+        } else if (mode == 2) {
+            w = $(window).width();
+            h = $(window).height();
+            t = 0;
+            l = 0;
+        } else if (mode == 3) {
+            w = $("#recordlist").width();
+            h = $("#recordlist").height();
+            t = $("#recordlist").offset().top;
+            l = $("#recordlist").offset().left;
+        }
+        var styleStr = "top:" + t + "px;left:" + l + "px;position:absolute;z-index:10000;background:#888;width:" + w + "px;height:" + h + "px;overflow:auto;";
+        var isIe = (document.all) ? true : false;
+        var isIE6 = isIe && !window.XMLHttpRequest;
+        styleStr += (isIe) ? "filter:alpha(opacity=80);" : "opacity:0.8;";
+        var divele = $("<div></div>");
+        divele.attr("id", "loadingbox");
+        divele.attr("style", styleStr);
+        var leftpos = l + (w - 200) / 2;
+        var toppos = t + h / 2 - 50;
 
+        var loadingStyle = 'display:block;position:fixed;_position:absolute;left:' + leftpos + 'px;top:' + toppos + 'px;_top:' + toppos + 'px;'; //弹出框的位置
+        var loadingBox = $("<div></div>");
+        loadingBox.attr("class", "loadingbox");
+        loadingBox.attr("style", loadingStyle);
+        //创建弹出框里面的内容P标签
+        var loadingInfo = $("<p></p>");
+        loadingInfo.attr("style", "text-align:center;");
+        loadingInfo.html(msg);
+        loadingBox.append(loadingInfo);
+        divele.html(loadingBox);
+        divele.show().appendTo("body");
+    }
+    function showSmsLoading(msg) {
+        showLoading(1, msg);
+    }
+    function showSendSmsLoading(msg) {
+        showLoading(2, msg);
+    }
+    
+    function showRecordsLoading(msg) {
+        showLoading(3, msg);
+    }
+    
+    function removeLoading() {
+        $("#loadingbox").remove();
+    }
+    
     function createEndCall() {
         var w = $("#dial_button_layout").width();
         var h = $("#dial_button").height();
@@ -122,6 +187,7 @@ $(document).ready(function() {
                 if ("2" == data) {
                     $("#smscontent").attr("value", "");
                     $("#smssend").removeAttr("disabled");
+                    removeLoading();
                     alert("短信发送成功");
                 } else {
                     setTimeout(querysmsstate, 1000);
@@ -129,15 +195,8 @@ $(document).ready(function() {
             }
         );
     }
-
-    $(window).load(function() {
-        setlayoutsize();
-        requestRecords();
-        requestSms();
-        needCreateEndCall();
-    });
-
-    $("#smssend").click(function () {
+    
+    function sendsmsfun() {
         var number = $("#phonenumber").val();
         var content = $("#smscontent").val();
         if (number.length <= 0 || content.length <= 0) {
@@ -154,13 +213,28 @@ $(document).ready(function() {
             return ;
         }
         $("#smssend").attr("disabled", "disabled");
+        showSendSmsLoading("发送中...");
         $.post(
 	        "action.do",
 	        {action:"sendsms",smsnumber:number,smscontent:content},
 	        function() {
 	            setTimeout(querysmsstate, 1000);
 	        }
-        );
+        ).error(function () {
+            removeLoading();
+        });
+        return false;
+    }
+
+    $(window).load(function() {
+        //setlayoutsize();
+        requestRecords();
+        requestSms();
+        needCreateEndCall();
+    });
+
+    $("#smssend").click(function () {
+        sendsmsfun();
     });
 
     $("#dial_button").click(function () {
@@ -203,16 +277,29 @@ $(document).ready(function() {
             }
         );
     });
+    
+    $("#updatesmslist").live("click", function() {
+        requestSms();
+    });
+    
+    $("#updaterecordlist").live("click", function() {
+        requestRecords();
+    });
+
     $(".sms_href").live("click", function () {
         var number = $(this).children().val();
+        showSmsLoading("加载中...");
         $.post(
             "action.do",
             {action:"getsmslist", smsnumber:number},
             function(data){
                 generateConversation();
                 $("#smsconversation").html(data);
+                removeLoading();
             }
-        );
+        ).error(function () {
+            removeLoading();
+        });
     });
 
     $("#back").live("click", function() {
@@ -224,11 +311,32 @@ $(document).ready(function() {
         $("#phonenumber").attr("value", $("#smsnumber").html());
     });
 
+    $(".delete_recordfile").live("click", function() {
+        var recordfile = $(this).children().val();
+        var index = recordfile.lastIndexOf('/');
+        var rFile = "";
+        if (index != -1) {
+            fFile = recordfile.substring(index + 1);
+        }
+        if(!confirm("确定删除此录音文件 ？\n" + fFile)) {
+            return ;
+        }
+        
+        $.post(
+            "action.do",
+            {action:"deleterecord", recordfile:recordfile},
+            function(data){
+                requestRecords();
+            }
+        );
+    });
+
     $(".dial_num_button").click(function (){
         var s = $("#phonenumber").val();
         s += $(this).val();
         $("#phonenumber").attr("value", s);
     });
+
     $("#phone_dial_delete").click(function (){
         var s = $("#phonenumber").val();
         if (s != null && s.length > 0) {
@@ -239,10 +347,6 @@ $(document).ready(function() {
     
     var timeout = undefined; 
 
-	$("#dial_button").click(function () {
-	});
-	
-	
 
 	$("#phone_dial_delete").bind("mousedown", function() { 
 	    timeout = setTimeout(function() { 

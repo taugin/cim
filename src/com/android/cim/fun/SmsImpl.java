@@ -84,7 +84,7 @@ public class SmsImpl implements ISms {
                         }
                         int _id = c.getInt(c.getColumnIndex("_id"));
                         conv.address = getAddress(_id);
-                        Log.d("taugin", "id : " + _id + " , address = " + conv.address);
+                        //Log.d("taugin", "id : " + _id + " , address = " + conv.address);
                         if (!TextUtils.isEmpty(conv.address)) {
                             int index = conv.address.indexOf(':');
                             if (index != -1) {
@@ -95,6 +95,7 @@ public class SmsImpl implements ISms {
                         }
                     } while (c.moveToNext());
                 }
+                /*
                 if (c.moveToFirst()) {
                     int colCount = c.getColumnCount();
                     String colName = null;
@@ -104,7 +105,7 @@ public class SmsImpl implements ISms {
                         colValue = c.getString(c.getColumnIndex(colName));
                         Log.d(Log.TAG, colName + " : " + colValue);
                     }
-                }
+                }*/
             }
         } catch (Exception e) {
             convList = null;
