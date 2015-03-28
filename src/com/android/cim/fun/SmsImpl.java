@@ -90,7 +90,10 @@ public class SmsImpl implements ISms {
                             if (index != -1) {
                                 conv.address = conv.address.substring(0, index);
                             }
-                            conv.name = getNameFromContact(mContext, conv.address);
+                            if (!TextUtils.isEmpty(conv.address) && conv.address.startsWith("+86")) {
+                                conv.address = conv.address.substring("+86".length());
+                            }
+                            conv.name = getContactNameFromPhoneBook(mContext, conv.address);
                             convList.add(conv);
                         }
                     } while (c.moveToNext());
@@ -250,6 +253,22 @@ public class SmsImpl implements ISms {
             }
         }
         return null;
+    }
+    
+    public String getContactNameFromPhoneBook(Context context, String phoneNum) {
+        String contactName = null;
+        ContentResolver cr = context.getContentResolver();
+        String selection = ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?";
+        Cursor pCur = cr.query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                selection, new String[] { phoneNum }, null);
+        if (pCur.moveToFirst()) {
+            contactName = pCur
+                    .getString(pCur
+                            .getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            pCur.close();
+        }
+        return contactName;
     }
 
     @Override

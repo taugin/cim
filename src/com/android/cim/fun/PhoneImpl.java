@@ -95,6 +95,9 @@ public class PhoneImpl implements IPhone {
     public List<RecordItem> getRecordFiles() {
         File dir = new File(Constants.RECORD_PATH);
         String files[] = dir.list();
+        if (files == null) {
+            return null;
+        }
         ArrayList<RecordItem> list = new ArrayList<RecordItem>();
         RecordItem item = null;
         File recordFile = null;
