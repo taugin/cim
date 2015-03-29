@@ -105,7 +105,7 @@ $(document).ready(function() {
         loadingInfo.attr("style", "text-align:center;");
         loadingInfo.html(msg);
         loadingBox.append(loadingInfo);
-        divele.html(loadingBox);
+        divele.append(loadingBox);
         divele.show().appendTo("body");
     }
     
