@@ -85,6 +85,7 @@ $(document).ready(function() {
             t = $("#phone_dial").offset().top;
             l = $("#phone_dial").offset().left;
         }
+
         var styleStr = "top:" + t + "px;left:" + l + "px;position:absolute;z-index:10000;background:#888;width:" + w + "px;height:" + h + "px;overflow:auto;";
         var isIe = (document.all) ? true : false;
         var isIE6 = isIe && !window.XMLHttpRequest;

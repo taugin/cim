@@ -111,9 +111,9 @@ public class PhoneImpl implements IPhone {
             splits = file.split("_");
             if (splits.length >= 3) {
                 if (splits[2] != null) {
-                    item.filename = splits[2];
+                    item.shortname = splits[2];
                 } else {
-                    item.filename = file;
+                    item.shortname = file;
                 }
                 long time = 0;
                 try {
@@ -124,9 +124,9 @@ public class PhoneImpl implements IPhone {
                 item.time = time;
                 item.filetime = sdf.format(new Date(time));
             } else {
-                item.filename = file;
+                item.shortname = file;
             }
-
+            item.filename = file;
             recordFile = new File(Constants.RECORD_PATH + file);
             if (recordFile.exists()) {
                 item.filesize = formatFileSize(recordFile.length());
