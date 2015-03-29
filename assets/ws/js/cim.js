@@ -14,30 +14,30 @@ $(document).ready(function() {
     }
 
     function requestSms() {
-        showSmsLoading("短信列表加载中...");
+        showLoading("sms", "短信列表加载中...");
         $.post(
             "action.do",
             {action:"getsmsconversations"},
             function(data){
                 $("#sms").html(data);
-                removeLoading();
+                removeLoading("sms");
             }
         ).error(function () {
-            removeLoading();
+            removeLoading("sms");
         });
     }
     
     function requestRecords() {
-        showRecordsLoading("录音列表加载中...");
+        showLoading("record", "录音列表加载中...");
         $.post(
             "action.do",
             {action:"recordlist"},
             function(data){
                 $("#recordlist").html(data);
-                removeLoading();
+                removeLoading("record");
             }
         ).error(function () {
-            removeLoading();
+            removeLoading("record");
         });
     }
 
@@ -59,31 +59,38 @@ $(document).ready(function() {
         divele.show().appendTo("body");
         $("#sms").hide();
     }
-    
+
+    var loadingboxinfo ={"sms":"smsloadingbox", "full":"fullloadingbox", "record":"recordloadingbox", "sendsms":"sendsmsbox"};
     function showLoading(mode, msg) {
         var w, h, t, l;
-        if (mode == 1) {
+        var loadingBoxId = "";
+        if (mode == "sms") {
             w = $("#sms").width();
             h = $("#sms").height();
             t = $("#sms").offset().top;
             l = $("#sms").offset().left;
-        } else if (mode == 2) {
+        } else if (mode == "full") {
             w = $(window).width();
             h = $(window).height();
             t = 0;
             l = 0;
-        } else if (mode == 3) {
+        } else if (mode == "record") {
             w = $("#recordlist").width();
             h = $("#recordlist").height();
             t = $("#recordlist").offset().top;
             l = $("#recordlist").offset().left;
+        } else if (mode == "sendsms") {
+            w = $("#phone_dial").width();
+            h = $("#phone_dial").height();
+            t = $("#phone_dial").offset().top;
+            l = $("#phone_dial").offset().left;
         }
         var styleStr = "top:" + t + "px;left:" + l + "px;position:absolute;z-index:10000;background:#888;width:" + w + "px;height:" + h + "px;overflow:auto;";
         var isIe = (document.all) ? true : false;
         var isIE6 = isIe && !window.XMLHttpRequest;
         styleStr += (isIe) ? "filter:alpha(opacity=80);" : "opacity:0.8;";
         var divele = $("<div></div>");
-        divele.attr("id", "loadingbox");
+        divele.attr("id", loadingboxinfo[mode]);
         divele.attr("style", styleStr);
         var leftpos = l + (w - 200) / 2;
         var toppos = t + h / 2 - 50;
@@ -100,19 +107,9 @@ $(document).ready(function() {
         divele.html(loadingBox);
         divele.show().appendTo("body");
     }
-    function showSmsLoading(msg) {
-        showLoading(1, msg);
-    }
-    function showSendSmsLoading(msg) {
-        showLoading(2, msg);
-    }
     
-    function showRecordsLoading(msg) {
-        showLoading(3, msg);
-    }
-    
-    function removeLoading() {
-        $("#loadingbox").remove();
+    function removeLoading(mode) {
+        $("#"+loadingboxinfo[mode]).remove();
     }
     
     function createEndCall() {
@@ -187,7 +184,7 @@ $(document).ready(function() {
                 if ("2" == data) {
                     $("#smscontent").attr("value", "");
                     $("#smssend").removeAttr("disabled");
-                    removeLoading();
+                    removeLoading("sendsms");
                     alert("短信发送成功");
                 } else {
                     setTimeout(querysmsstate, 1000);
@@ -212,8 +209,9 @@ $(document).ready(function() {
             alert("取消发送短信");
             return ;
         }
+
         $("#smssend").attr("disabled", "disabled");
-        showSendSmsLoading("发送中...");
+        showLoading("sendsms", "短信发送中...");
         $.post(
 	        "action.do",
 	        {action:"sendsms",smsnumber:number,smscontent:content},
@@ -221,7 +219,7 @@ $(document).ready(function() {
 	            setTimeout(querysmsstate, 1000);
 	        }
         ).error(function () {
-            removeLoading();
+            removeLoading("sendsms");
         });
         return false;
     }
@@ -288,17 +286,17 @@ $(document).ready(function() {
 
     $(".sms_href").live("click", function () {
         var number = $(this).children().val();
-        showSmsLoading("加载中...");
+        showLoading("sms", "短信会话加载中...");
         $.post(
             "action.do",
             {action:"getsmslist", smsnumber:number},
             function(data){
                 generateConversation();
                 $("#smsconversation").html(data);
-                removeLoading();
+                removeLoading("sms");
             }
         ).error(function () {
-            removeLoading();
+            removeLoading("sms");
         });
     });
 

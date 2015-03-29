@@ -3,6 +3,7 @@ package com.android.cim.fun;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.PendingIntent;
@@ -15,7 +16,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
 
@@ -50,10 +51,16 @@ public class SmsImpl implements ISms {
 
     private Object mLock = new Object();
     private int mSmsState = 0;
+    private HashMap<String, String> mHashMap = null;
 
     private Context mContext;
     public SmsImpl(Context context) {
         mContext = context;
+        new Thread() {
+            public void run() {
+                queryContact();
+            }
+        }.start();
     }
     @Override
     public List<Conversation> getAllConversation() {
@@ -93,7 +100,12 @@ public class SmsImpl implements ISms {
                             if (!TextUtils.isEmpty(conv.address) && conv.address.startsWith("+86")) {
                                 conv.address = conv.address.substring("+86".length());
                             }
-                            conv.name = getContactNameFromPhoneBook(mContext, conv.address);
+                            if (mHashMap != null) {
+                                conv.name = mHashMap.get(conv.address);
+                            }
+                            if (TextUtils.isEmpty(conv.name)) {
+                                conv.name = getContactNameFromPhoneBook(mContext, conv.address);
+                            }
                             convList.add(conv);
                         }
                     } while (c.moveToNext());
@@ -148,14 +160,20 @@ public class SmsImpl implements ISms {
                         smsInfo.date = sdf.format(new Date(date));
                         long date_sent = c.getLong(c.getColumnIndex("date_sent"));
                         smsInfo.date_sent = sdf.format(new Date(date_sent));
-                        if (date_sent > 0) {
+                        int type = c.getInt(c.getColumnIndex("type"));
+                        if (type == 1) {
                             smsInfo.isSend = null;
                         } else {
                             smsInfo.isSend = "true";
                         }
                         int read = c.getInt(c.getColumnIndex("read"));
                         smsInfo.read = String.valueOf(read);
-                        smsInfo.name = getNameFromContact(mContext, smsInfo.address);
+                        if (mHashMap != null) {
+                            smsInfo.name = mHashMap.get(smsInfo.address);
+                        }
+                        if (TextUtils.isEmpty(smsInfo.name)) {
+                            smsInfo.name = getNameFromContact(mContext, smsInfo.address);
+                        }
                         smsInfoList.add(smsInfo);
                     } while (c.moveToNext());
                 }
@@ -274,5 +292,42 @@ public class SmsImpl implements ISms {
     @Override
     public void resetSmsState() {
         setSmsState(SMS_STATE_NORMAL);
+    }
+    
+
+    private void queryContact() {
+        if (mHashMap != null) {
+            return ;
+        }
+        mHashMap = new HashMap<String, String>();
+        String[] PHONES_PROJECTION = new String[] {Phone.DISPLAY_NAME, Phone.NUMBER };
+        Cursor c = null;
+        try {
+            c = mContext.getContentResolver().query(Phone.CONTENT_URI, PHONES_PROJECTION, 
+                    null, null, null);
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    do {
+                        String phoneNumber = c.getString(c.getColumnIndex(Phone.NUMBER));
+                        String displayName = c.getString(c.getColumnIndex(Phone.DISPLAY_NAME));
+                        if (phoneNumber.startsWith("+86")) {
+                            phoneNumber = phoneNumber.substring("+86".length());
+                        }
+                        phoneNumber = phoneNumber.replaceAll("-", "");
+                        phoneNumber = phoneNumber.replaceAll("\\s+", "");
+                        //Log.d(Log.TAG, phoneNumber + " : " + displayName);
+                        if (!TextUtils.isEmpty(displayName)) {
+                            mHashMap.put(phoneNumber, displayName);
+                        }
+                    } while (c.moveToNext());
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
     }
 }

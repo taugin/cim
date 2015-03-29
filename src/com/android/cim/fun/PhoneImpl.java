@@ -4,14 +4,12 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.ParseException;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
 
@@ -167,5 +165,4 @@ public class PhoneImpl implements IPhone {
         }
         return fileSizeString;
     }
-
 }

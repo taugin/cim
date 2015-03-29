@@ -6,21 +6,22 @@
 <center id="smsnumber">{{address}}</center>
 </div>
 </div>
-{% if smslist %}
+
 <div style="overflow:auto;height:95%;width:100%">
+{% if smslist %}
 <table border="1" width="100%">
 {% for row in smslist%}
 <tr style="width:100%">
 <td>
-<p align=center>{{row.date}}</p>
+<p align=center style="width:100%">{{row.date}}</p>
 {%if row.isSend%}
-<p align="right">{{row.body}}</p>
+<p align="right" style="width:100%"><font color="#55F">{{row.body}}</font></p>
 {%else%}
-<p align="left">{{row.body}}</p>
+<p align="left" style="width:100%">{{row.body}}</p>
 {%endif%}
 </td>
 </tr>
 {% endfor %}
 </table>
-</div>
 {% endif %}
+</div>
